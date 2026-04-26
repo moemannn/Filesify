@@ -1,18 +1,19 @@
-use which::which;
 use crate::config::package_managers::*;
+use crate::adapters::package_manager_validation::{PackageManagerResult, package_manager_check};
+use crate::app::state::AppState;
 
-pub fn detect_available_package_managers() -> Vec<&'static PackageManager> {
-    let mut available = Vec::new();
-
-    for pm in DISTRO_PACKAGE_MANAGERS
+fn detect_all_package_managers() -> Vec<PackageManagerResult> {
+    DISTRO_PACKAGE_MANAGERS
         .iter()
         .chain(USER_PACKAGE_MANAGERS.iter())
         .chain(LANGUAGE_PACKAGE_MANAGERS.iter())
         .chain(TOOLCHAIN_PACKAGE_MANAGERS.iter())
-    {
-        if pm.cmd.iter().any(|cmd| which(cmd).is_ok()) {
-            available.push(pm);
-        }
-    }
-    available
+        .map(|pm| package_manager_check(pm))
+        .collect()
+}
+
+pub fn update_package_managers(state: &mut AppState) {
+    let results = detect_all_package_managers();
+
+    state.set_package_manager_result(results);
 }
