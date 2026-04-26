@@ -27,6 +27,7 @@
 ├── .gitignore                          # git ignore
 ├── README.md                           # read me
 ├── src/                                # source code
+├── doc/                                # documentation
 ├── tests/                              # integration tests
 └── target/                             # compiled build output
 
