@@ -1,23 +1,24 @@
-use crate::config::package_managers::PackageManager;
+use crate::adapters::PackageManagerResult;
+use crate::config::package_managers::*;
+use crate::config::*;
 
+#[derive(Debug)]
 pub struct AppState {
-    pub available_package_managers: Vec<&'static PackageManager>,
+    pub detection_result: Vec<PackageManagerResult>,
     pub selected_package_manager: Option<&'static PackageManager>,
-    // pub selected_package: Option<&'static PackageManager>,
 }
 
 impl AppState {
     pub fn new() -> Self {
         Self {
-            available_package_managers: Vec::new(),
+            detection_result: Vec::new(),
             selected_package_manager: None,
-            // selected_package: None,
         }
     }
 
-    pub fn set_available(&mut self, managers: Vec<&'static PackageManager>) {
-        self.available_package_managers.clear();
-        self.available_package_managers.extend(managers);
+    pub fn set_package_manager_result(&mut self, managers: Vec<PackageManagerResult>) {
+        self.detection_result.clear();
+        self.detection_result.extend(managers);
     }
 
     pub fn select_package_manager(&mut self, pm: &'static PackageManager) {

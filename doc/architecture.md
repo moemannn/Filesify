@@ -13,24 +13,12 @@
 │        ├── input                      # input handling
 |        │       ├── 
 │        │       └── 
-│        └── ui                         # tui rendering
+│        └── ui                         # ui rendering
 |                ├── 
 │                └── 
 └── services
     ├── 
     └── 
-
-[]Filestify[] tree 
-.
-├── Cargo.lock                          # dependency lock file
-├── Cargo.toml                          # project config
-├── .gitignore                          # git ignore
-├── README.md                           # read me
-├── src/                                # source code
-├── doc/                                # documentation
-├── tests/                              # integration tests
-└── target/                             # compiled build output
-
 
 presentation → services → adapters
                      ↑
