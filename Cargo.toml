@@ -1,7 +1,6 @@
 [package]
 name = "Filesify"
 description = "..."
-readme = "README.md"
 
 repository = "https://github.com/moemannn/Filesify"
 homepage = "https://github.com/moemannn/Filesify"
@@ -9,6 +8,7 @@ homepage = "https://github.com/moemannn/Filesify"
 version = "0.1.0"
 edition = "2024"
 
+readme = "README.md"
 authors = ["moemannn"]
 license = "MIT"
 
