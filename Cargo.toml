@@ -10,7 +10,7 @@ edition = "2024"
 
 readme = "README.md"
 authors = ["moemannn"]
-license = "MIT"
+license = "LICENSE"
 
 [dependencies]
 ratatui = { version = "0.30.0", default-features = false, features = ["crossterm"] }
