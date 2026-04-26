@@ -14,3 +14,4 @@ license = "LICENSE"
 
 [dependencies]
 ratatui = { version = "0.30.0", default-features = false, features = ["crossterm"] }
+which = "8.0.2"
