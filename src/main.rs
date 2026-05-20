@@ -54,6 +54,7 @@ pub fn run_command(
     package: &str,
 ) -> Result<String, String> {
     use std::process::Command as SysCommand;
+
     let cmd = pm
         .commands
         .iter()
@@ -78,7 +79,7 @@ pub fn run_command(
         return Err(stderr);
     }
 
-    Ok(stdout)
+    Ok(if stdout.trim().is_empty() { stderr } else { stdout })
 }
 
 fn print_group(title: &str, state: &AppState, status: PackageManagerStatus) {

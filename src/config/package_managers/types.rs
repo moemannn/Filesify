@@ -23,12 +23,6 @@ pub const LANGUAGE_PACKAGE_MANAGERS: &[PackageManager] = &[
     PIP,
 ];
 
-pub const TOOLCHAIN_PACKAGE_MANAGERS: &[PackageManager] = &[
-    RUSTUP,
-    PYENV,
-    NVM,
-];
-
 #[derive(Debug)]
 pub struct PackageManager {
     pub name: &'static str,
@@ -60,7 +54,10 @@ pub enum PackageManagerCategory {
 pub enum Capability {
     Install,
     Update,
+    Refresh,
     Upgrade,
+    UpgradeAll,
+    Info,
     Search,
     List,
     Version,

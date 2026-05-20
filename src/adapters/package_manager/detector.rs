@@ -7,7 +7,6 @@ pub fn detect_valid_package_managers() -> Vec<PackageManagerResult> {
         .iter()
         .chain(USER_PACKAGE_MANAGERS.iter())
         .chain(LANGUAGE_PACKAGE_MANAGERS.iter())
-        .chain(TOOLCHAIN_PACKAGE_MANAGERS.iter())
         .map(|pm| package_manager_check(pm))
         .collect()
 }
