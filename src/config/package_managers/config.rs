@@ -1,11 +1,13 @@
 use super::types::*;
 
+// ===================== Distro PACKAGE MANAGERS =====================
+
 // ---------------- APT ----------------
 pub const APT: PackageManager = PackageManager {
     name: "APT",
     cmd: &["apt", "apt-get"],
     detection_method: DetectionMethod::AbsolutePath,
-    category: PackageManagerCategory::System,
+    category: PackageManagerCategory::Distro,
     commands: &[
         Command {
             capability: Capability::Install,
@@ -31,7 +33,7 @@ pub const APT: PackageManager = PackageManager {
         Command {
             capability: Capability::UpgradeAll,
             bin: "apt",
-            args: &[Args::Static("upgrade")],
+            args: &[Args::Static("upgrade"), Args::Static("-y")],
             description: "Upgrade all packages",
             requires_sudo: true,
         },
@@ -64,7 +66,7 @@ pub const DNF: PackageManager = PackageManager {
     name: "DNF",
     cmd: &["dnf"],
     detection_method: DetectionMethod::AbsolutePath,
-    category: PackageManagerCategory::System,
+    category: PackageManagerCategory::Distro,
     commands: &[
         Command {
             capability: Capability::Install,
@@ -83,14 +85,14 @@ pub const DNF: PackageManager = PackageManager {
         Command {
             capability: Capability::Refresh,
             bin: "dnf",
-            args: &[Args::Static("check-update")],
-            description: "Check for updates",
-            requires_sudo: false,
+            args: &[Args::Static("makecache")],
+            description: "Refresh metadata cache",
+            requires_sudo: true,
         },
         Command {
             capability: Capability::UpgradeAll,
             bin: "dnf",
-            args: &[Args::Static("upgrade")],
+            args: &[Args::Static("upgrade"), Args::Static("-y")],
             description: "Upgrade all packages",
             requires_sudo: true,
         },
@@ -123,7 +125,7 @@ pub const YUM: PackageManager = PackageManager {
     name: "YUM",
     cmd: &["yum"],
     detection_method: DetectionMethod::AbsolutePath,
-    category: PackageManagerCategory::System,
+    category: PackageManagerCategory::Distro,
     commands: &[
         Command {
             capability: Capability::Install,
@@ -142,14 +144,14 @@ pub const YUM: PackageManager = PackageManager {
         Command {
             capability: Capability::Refresh,
             bin: "yum",
-            args: &[Args::Static("check-update")],
-            description: "Check for updates",
-            requires_sudo: false,
+            args: &[Args::Static("makecache")],
+            description: "Refresh metadata",
+            requires_sudo: true,
         },
         Command {
             capability: Capability::UpgradeAll,
             bin: "yum",
-            args: &[Args::Static("update")],
+            args: &[Args::Static("update"), Args::Static("-y")],
             description: "Upgrade all packages",
             requires_sudo: true,
         },
@@ -182,7 +184,7 @@ pub const PACMAN: PackageManager = PackageManager {
     name: "Pacman",
     cmd: &["pacman"],
     detection_method: DetectionMethod::AbsolutePath,
-    category: PackageManagerCategory::System,
+    category: PackageManagerCategory::Distro,
     commands: &[
         Command {
             capability: Capability::Install,
@@ -208,8 +210,8 @@ pub const PACMAN: PackageManager = PackageManager {
         Command {
             capability: Capability::UpgradeAll,
             bin: "pacman",
-            args: &[Args::Static("-Syu")],
-            description: "Upgrade system",
+            args: &[Args::Static("-Syu"), Args::Static("--noconfirm")],
+            description: "Upgrade Distro",
             requires_sudo: true,
         },
         Command {
@@ -241,7 +243,7 @@ pub const ZYPPER: PackageManager = PackageManager {
     name: "Zypper",
     cmd: &["zypper"],
     detection_method: DetectionMethod::AbsolutePath,
-    category: PackageManagerCategory::System,
+    category: PackageManagerCategory::Distro,
     commands: &[
         Command {
             capability: Capability::Install,
@@ -267,7 +269,7 @@ pub const ZYPPER: PackageManager = PackageManager {
         Command {
             capability: Capability::UpgradeAll,
             bin: "zypper",
-            args: &[Args::Static("update")],
+            args: &[Args::Static("update"), Args::Static("-y")],
             description: "Upgrade all packages",
             requires_sudo: true,
         },
@@ -300,7 +302,7 @@ pub const EMERGE: PackageManager = PackageManager {
     name: "Portage (emerge)",
     cmd: &["emerge"],
     detection_method: DetectionMethod::AbsolutePath,
-    category: PackageManagerCategory::System,
+    category: PackageManagerCategory::Distro,
     commands: &[
         Command {
             capability: Capability::Install,
@@ -327,7 +329,7 @@ pub const EMERGE: PackageManager = PackageManager {
             capability: Capability::UpgradeAll,
             bin: "emerge",
             args: &[Args::Static("-u"), Args::Static("world")],
-            description: "Upgrade system",
+            description: "Upgrade Distro",
             requires_sudo: true,
         },
         Command {
@@ -359,7 +361,7 @@ pub const NIX: PackageManager = PackageManager {
     name: "Nix",
     cmd: &["nix", "nix-env", "nix-channel"],
     detection_method: DetectionMethod::AbsolutePath,
-    category: PackageManagerCategory::System,
+    category: PackageManagerCategory::Distro,
     commands: &[
         Command {
             capability: Capability::Install,
@@ -413,7 +415,8 @@ pub const NIX: PackageManager = PackageManager {
     ],
 };
 
-// ---------------- SNAP ----------------
+// ===================== USER PACKAGE MANAGERS =====================
+
 pub const SNAP: PackageManager = PackageManager {
     name: "Snap",
     cmd: &["snap"],
@@ -472,7 +475,6 @@ pub const SNAP: PackageManager = PackageManager {
     ],
 };
 
-// ---------------- FLATPAK ----------------
 pub const FLATPAK: PackageManager = PackageManager {
     name: "Flatpak",
     cmd: &["flatpak"],
@@ -531,7 +533,8 @@ pub const FLATPAK: PackageManager = PackageManager {
     ],
 };
 
-// ---------------- CARGO ----------------
+// ===================== LANGUAGE PACKAGE MANAGERS =====================
+
 pub const CARGO: PackageManager = PackageManager {
     name: "Cargo",
     cmd: &["cargo"],
@@ -549,7 +552,7 @@ pub const CARGO: PackageManager = PackageManager {
             capability: Capability::Info,
             bin: "cargo",
             args: &[Args::Static("search"), Args::PackageName],
-            description: "Show crate information",
+            description: "Show crate info",
             requires_sudo: false,
         },
         Command {
@@ -590,7 +593,6 @@ pub const CARGO: PackageManager = PackageManager {
     ],
 };
 
-// ---------------- NPM ----------------
 pub const NPM: PackageManager = PackageManager {
     name: "NPM",
     cmd: &["npm"],
@@ -608,7 +610,7 @@ pub const NPM: PackageManager = PackageManager {
             capability: Capability::Info,
             bin: "npm",
             args: &[Args::Static("view"), Args::PackageName],
-            description: "Show package information",
+            description: "Show package info",
             requires_sudo: false,
         },
         Command {
@@ -649,7 +651,6 @@ pub const NPM: PackageManager = PackageManager {
     ],
 };
 
-// ---------------- PIP ----------------
 pub const PIP: PackageManager = PackageManager {
     name: "PIP",
     cmd: &["pip", "pip3"],
@@ -667,7 +668,7 @@ pub const PIP: PackageManager = PackageManager {
             capability: Capability::Info,
             bin: "pip3",
             args: &[Args::Static("show"), Args::PackageName],
-            description: "Show package information",
+            description: "Show package info",
             requires_sudo: false,
         },
         Command {
@@ -701,12 +702,8 @@ pub const PIP: PackageManager = PackageManager {
         Command {
             capability: Capability::UpgradeAll,
             bin: "pip3",
-            args: &[
-                Args::Static("install"),
-                Args::Static("--upgrade"),
-                Args::Static("pip"),
-            ],
-            description: "Upgrade pip itself (manual expansion needed for full system upgrade)",
+            args: &[Args::Static("list"), Args::Static("--outdated")],
+            description: "List outdated packages (manual upgrade needed)",
             requires_sudo: false,
         },
     ],

@@ -1,5 +1,4 @@
 use super::config::*;
-use super::Implementation::*;
 
 // ---------------- REGISTRY ----------------
 pub const DISTRO_PACKAGE_MANAGERS: &[PackageManager] = &[
@@ -41,12 +40,11 @@ pub struct Command {
     pub requires_sudo: bool,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum PackageManagerCategory {
-    System,
+    Distro,
     User,
     Language,
-    Toolchain,
 }
 
 #[derive(Debug)]

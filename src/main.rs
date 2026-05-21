@@ -1,51 +1,101 @@
 mod config;
 mod adapters;
 mod app;
+mod presentation;
+
+use std::collections::HashMap;
+use crate::presentation::ui::render_layout::*;
 
 use adapters::package_manager::*;
 use crate::app::{AppState, app_state};
-use crate::config::package_managers::PackageManager;
+use crate::config::package_managers::{PackageManager};
+use crate::app::state::{Package};
 
 fn main() {
     let mut state = app_state().lock().unwrap();
-
     get_package_mangers(&mut state);
+
+    // dbg!(&state.packaged_grouped_by_manager.get("APT"));
+
+    render_main(&mut state).expect("TODO: panic message");
 }
 
-fn get_package_mangers(state: &mut AppState) {
+fn get_package_mangers(
+    state: &mut AppState
+) {
     updater::update_package_managers(state);
-
-    print_group("Installed package managers:", state, PackageManagerStatus::Installed);
-    print_group("Not installed package managers:", state, PackageManagerStatus::NotInstalled);
-    print_group("Invalid package managers:", state, PackageManagerStatus::Invalid);
 
     get_packages_list(state);
 
 }
 
 fn get_packages_list(state: &mut AppState) {
-    use std::io;
-    use config::package_managers::types::Capability;
-    for pkg in &state.detection_result {
-        if pkg.status == PackageManagerStatus::Installed {
-            dbg!(pkg.manager.name.clone());
-            
-            if let Ok(list) = run_command(pkg.manager, Capability::List, "") {
+    use config::package_managers::{DISTRO_PACKAGE_MANAGERS, types::Capability};
 
-                for i in list.lines() {
-                    println!("{}", i);
+    // state.packaged_grouped_by_manager.clear();
 
-                    if let Ok(output) = run_command(pkg.manager, Capability::Search, i) {
-                        println!("{}", output);
-                    }
+    for manager in DISTRO_PACKAGE_MANAGERS {
+        let detection = state
+            .detection_package_managers
+            .iter()
+            .find(|d| d.manager.name == manager.name);
 
-                    let mut pause = String::new();
-                    io::stdin().read_line(&mut pause).expect("failed to read input");
+        let is_installed = detection
+            .map(|d| d.status == PackageManagerStatus::Installed)
+            .unwrap_or(false);
+
+        if !is_installed {
+            continue;
+        }
+
+        if let Ok(list) = run_command(manager, Capability::List, "") {
+            for line in list.lines() {
+                if is_library(line) {
+                    continue;
                 }
-            }
 
+                assign_grouping(line, manager.name, state);
+            }
         }
     }
+}
+fn assign_grouping(
+    line: &str,
+    manager_name: &str,
+    state: &mut AppState,
+) {
+    let group_name = clean_pkg_name(line);
+
+    let skip = ["Listing...", "", "No", "└──"];
+
+    if skip.contains(&group_name) || group_name.is_empty() {
+        return;
+    }
+
+    state
+        .packaged_grouped_by_manager
+        .entry(manager_name.to_string())
+        .or_default()
+        .push(Package {
+            name: line.to_string(),
+            group: group_name.to_string(),
+        });
+}
+
+fn clean_pkg_name(
+    pkg: &str
+) -> &str {
+    pkg.split([' ', '-', '/'])
+        .next()
+        .unwrap_or("")
+}
+
+fn is_library(
+    pkg: &str
+) -> bool {
+    pkg.starts_with("lib")
+        || pkg.contains("-dev")
+        || pkg.contains("-devel")
 }
 
 pub fn run_command(
@@ -80,16 +130,4 @@ pub fn run_command(
     }
 
     Ok(if stdout.trim().is_empty() { stderr } else { stdout })
-}
-
-fn print_group(title: &str, state: &AppState, status: PackageManagerStatus) {
-    println!("{title}");
-
-    for pm in &state.detection_result {
-        if pm.status == status {
-            println!("- {}", pm.manager.name);
-        }
-    }
-
-    println!();
 }

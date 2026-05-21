@@ -1,6 +1,5 @@
 use crate::config::package_managers::*;
 use super::validator::{PackageManagerResult, absolute_path, version_check, daemon_check};
-use crate::app::state::AppState;
 
 pub fn detect_valid_package_managers() -> Vec<PackageManagerResult> {
     DISTRO_PACKAGE_MANAGERS

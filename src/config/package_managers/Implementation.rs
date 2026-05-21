@@ -1,19 +1,18 @@
 use super::types::*;
 
-// impl Capability {
-//     pub fn as_str(&self) -> &'static str {
-//         match self {
-//             Capability::Install => "install",
-//             Capability::Update => "update",
-//             Capability::Upgrade => "upgrade",
-//             Capability::Info => "info",
-//             Capability::Search => "search",
-//             Capability::List => "list",
-//             Capability::Version => "version",
-//             Capability::Alias(s) => s,
-//         }
-//     }
-// }
+use std::fmt;
+
+impl fmt::Display for PackageManagerCategory {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let name = match self {
+            PackageManagerCategory::Distro => "Distro",
+            PackageManagerCategory::User => "User",
+            PackageManagerCategory::Language => "Language",
+        };
+
+        write!(f, "{}", name)
+    }
+}
 
 impl Args {
     pub fn resolve(&self, package: &str) -> Vec<String> {
