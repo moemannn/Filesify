@@ -9,7 +9,7 @@ use crate::presentation::ui::render_layout::*;
 use adapters::package_manager::*;
 use crate::app::{AppState, app_state};
 use crate::config::package_managers::{PackageManager};
-use crate::app::state::{Package};
+use crate::app::state::{Package, Groups};
 
 fn main() {
     let mut state = app_state().lock().unwrap();
@@ -76,9 +76,12 @@ fn assign_grouping(
         .packaged_grouped_by_manager
         .entry(manager_name.to_string())
         .or_default()
+        .entry(Groups {
+            name: group_name.to_string(),
+        })
+        .or_default()
         .push(Package {
             name: line.to_string(),
-            group: group_name.to_string(),
         });
 }
 

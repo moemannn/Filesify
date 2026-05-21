@@ -5,9 +5,9 @@ use std::fmt;
 impl fmt::Display for PackageManagerCategory {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let name = match self {
-            PackageManagerCategory::Distro => "Distro",
-            PackageManagerCategory::User => "User",
-            PackageManagerCategory::Language => "Language",
+            PackageManagerCategory::Distro => "Distro (F1)",
+            PackageManagerCategory::User => "User (F2)",
+            PackageManagerCategory::Language => "Language (F3)",
         };
 
         write!(f, "{}", name)

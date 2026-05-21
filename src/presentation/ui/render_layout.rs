@@ -7,6 +7,8 @@ use crate::app::{ AppState};
 use ratatui::layout::{Layout, Rect};
 use ratatui::text::Line;
 use crate::adapters::PackageManagerStatus;
+use crate::app::state::Package;
+use crate::config::package_managers::config::{APT, CARGO, SNAP};
 use crate::config::package_managers::types::*;
 
 pub fn render_main(state: &mut AppState) -> color_eyre::Result<()> {
@@ -33,14 +35,19 @@ pub fn app(
                     return Ok(());
                 }
 
+                match key.code {
+                    KeyCode::F(1) => { state.select_package_manager(APT)}
+                    KeyCode::F(2) => { state.select_package_manager(SNAP)}
+                    KeyCode::F(3) => { state.select_package_manager(CARGO)}
+                    KeyCode::F(4) => {state.select_package(Package{ name: "".to_string() })}
+                    _ => {}
+                }
                 if key.code == KeyCode::Esc {
                     return Ok(());
                 }
                 if key.modifiers == KeyModifiers::CONTROL && key.code == KeyCode::Char('c') {
                     return Ok(());
                 }
-
-                println!("{}", format!("{} - {}", key.modifiers, key.code))
             }
         }
     }
@@ -145,7 +152,9 @@ pub fn render_packages_block(
     area: Rect,
 ){
     let block = Block::default()
-        .title("Packages")
+        .title(Line::from("Packages (F4)").left_aligned())
+        .title(Line::from("(grouped)").right_aligned())
+
         .borders(Borders::ALL);
 
     f.render_widget(&block, area);
@@ -157,9 +166,8 @@ pub fn render_packages_block(
         .get("APT")
         .into_iter()
         .flat_map(|v| v.iter())
-        .map(|p| ListItem::new(p.name.clone()))
+        .map(|p| ListItem::new(p.0.name.clone()))
         .collect();
-
 
     let list = List::new(items);
 
