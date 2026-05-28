@@ -22,7 +22,14 @@ pub const LANGUAGE_PACKAGE_MANAGERS: &[PackageManager] = &[
     PIP,
 ];
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PackageManagerCategory {
+    Distro,
+    User,
+    Language,
+}
+
+#[derive(Debug, Clone)]
 pub struct PackageManager {
     pub name: &'static str,
     pub cmd: &'static [&'static str],
@@ -39,16 +46,7 @@ pub struct Command {
     pub description: &'static str,
     pub requires_sudo: bool,
 }
-
 #[derive(Debug, PartialEq)]
-pub enum PackageManagerCategory {
-    Distro,
-    User,
-    Language,
-}
-
-#[derive(Debug)]
-#[derive(PartialEq)]
 pub enum Capability {
     Install,
     Update,
@@ -62,7 +60,7 @@ pub enum Capability {
     Alias(&'static str),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum DetectionMethod {
     AbsolutePath,
     Version,

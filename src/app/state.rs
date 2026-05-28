@@ -1,40 +1,33 @@
 use std::collections::HashMap;
 use crate::adapters::PackageManagerResult;
-use crate::config::package_managers::*;
-use crate::config::package_managers::config::{APT, CARGO, DNF, EMERGE, FLATPAK, NIX, NPM, PACMAN, PIP, SNAP, YUM, ZYPPER};
+use crate::config::package_manager::*;
+use crate::config::package_manager::package::r#type::*;
 
 #[derive(Debug)]
 pub struct AppState {
-    pub detection_package_managers: Vec<PackageManagerResult>,
     pub selected_package_manager: Option<PackageManager>,
     pub selected_package: Option<Package>,
-    pub packaged_grouped_by_manager: HashMap<String, HashMap<Groups, Vec<Package>>>
-}
 
-#[derive(Debug)]
-pub struct Package {
-    pub name: String,
+    pub detected_package_managers: Vec<PackageManagerResult>,
+    pub detected_package_grouped: HashMap<String, HashMap<Groups, Vec<Package>>>
 }
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct Groups {
-    pub name: String,
-}
-
 
 impl AppState {
     pub fn new() -> Self {
         Self {
-            detection_package_managers: Vec::new(),
+            detected_package_managers: Vec::new(),
             selected_package_manager: None,
             selected_package: None,
-            packaged_grouped_by_manager: HashMap::new(),
+            detected_package_grouped: HashMap::new(),
         }
     }
 
     pub fn set_package_manager_result(&mut self, managers: Vec<PackageManagerResult>) {
-        self.detection_package_managers.clear();
-        self.detection_package_managers.extend(managers);
+        self.detected_package_managers.clear();
+        self.selected_package_manager = managers.iter()
+            .find(|pm| pm.manager.category == PackageManagerCategory::Distro)
+            .map(|x| x.manager.clone());;
+        self.detected_package_managers.extend(managers);
     }
 
     pub fn select_package_manager(&mut self, pm: PackageManager) {

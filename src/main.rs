@@ -3,21 +3,18 @@ mod adapters;
 mod app;
 mod presentation;
 
-use std::collections::HashMap;
-use crate::presentation::ui::render_layout::*;
+use presentation::app::*;
 
 use adapters::package_manager::*;
 use crate::app::{AppState, app_state};
-use crate::config::package_managers::{PackageManager};
-use crate::app::state::{Package, Groups};
+use crate::config::package_manager::{PackageManager};
+use crate::config::package_manager::package::r#type::*;
 
 fn main() {
     let mut state = app_state().lock().unwrap();
     get_package_mangers(&mut state);
-
-    // dbg!(&state.packaged_grouped_by_manager.get("APT"));
-
-    render_main(&mut state).expect("TODO: panic message");
+    
+    presentation::app::app(&mut state).expect("TODO: panic message");
 }
 
 fn get_package_mangers(
@@ -30,13 +27,13 @@ fn get_package_mangers(
 }
 
 fn get_packages_list(state: &mut AppState) {
-    use config::package_managers::{DISTRO_PACKAGE_MANAGERS, types::Capability};
+    use config::package_manager::{DISTRO_PACKAGE_MANAGERS, types::Capability};
 
     // state.packaged_grouped_by_manager.clear();
 
     for manager in DISTRO_PACKAGE_MANAGERS {
         let detection = state
-            .detection_package_managers
+            .detected_package_managers
             .iter()
             .find(|d| d.manager.name == manager.name);
 
@@ -73,7 +70,7 @@ fn assign_grouping(
     }
 
     state
-        .packaged_grouped_by_manager
+        .detected_package_grouped
         .entry(manager_name.to_string())
         .or_default()
         .entry(Groups {
@@ -103,7 +100,7 @@ fn is_library(
 
 pub fn run_command(
     pm: &PackageManager,
-    capability: config::package_managers::types::Capability,
+    capability: config::package_manager::types::Capability,
     package: &str,
 ) -> Result<String, String> {
     use std::process::Command as SysCommand;

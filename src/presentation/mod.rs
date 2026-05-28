@@ -1,5 +1,7 @@
-pub mod ui;
-pub mod input;
 
-pub use ui::*;
-pub use input::*;
+pub mod input;
+pub mod render;
+pub mod app;
+
+use app::*;
+

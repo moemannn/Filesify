@@ -1,5 +1,5 @@
 use which::which;
-use crate::config::package_managers::*;
+use crate::config::package_manager::*;
 
 #[derive(Debug)]
 pub struct PackageManagerResult {

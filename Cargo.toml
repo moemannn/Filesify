@@ -16,3 +16,4 @@ license = "LICENSE"
 ratatui = { version = "0.30.0", default-features = false, features = ["crossterm"] }
 which = "8.0.2"
 color-eyre = "0.6.5"
+crossterm = "0.29.0"

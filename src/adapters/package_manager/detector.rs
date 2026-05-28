@@ -1,4 +1,4 @@
-use crate::config::package_managers::*;
+use crate::config::package_manager::*;
 use super::validator::{PackageManagerResult, absolute_path, version_check, daemon_check};
 
 pub fn detect_valid_package_managers() -> Vec<PackageManagerResult> {
