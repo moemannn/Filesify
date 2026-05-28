@@ -2,11 +2,13 @@ use std::collections::HashMap;
 use crate::adapters::PackageManagerResult;
 use crate::config::package_manager::*;
 use crate::config::package_manager::package::r#type::*;
+use crate::config::package_manager::PackageManagerCategory::Distro;
 
 #[derive(Debug)]
 pub struct AppState {
     pub selected_package_manager: Option<PackageManager>,
     pub selected_package: Option<Package>,
+    pub selected_category: Option<PackageManagerCategory>,
 
     pub detected_package_managers: Vec<PackageManagerResult>,
     pub detected_package_grouped: HashMap<String, HashMap<Groups, Vec<Package>>>
@@ -18,6 +20,7 @@ impl AppState {
             detected_package_managers: Vec::new(),
             selected_package_manager: None,
             selected_package: None,
+            selected_category: Option::from(Distro),
             detected_package_grouped: HashMap::new(),
         }
     }
@@ -30,16 +33,21 @@ impl AppState {
         self.detected_package_managers.extend(managers);
     }
 
-    pub fn select_package_manager(&mut self, pm: PackageManager) {
+    pub fn set_package_manager(&mut self, pm: PackageManager) {
         self.selected_package_manager = Some(pm);
     }
 
-    pub fn select_package(&mut self, pm: Package) {
+    pub fn set_category(&mut self, c: PackageManagerCategory) {
+        self.selected_category = Some(c);
+    }
+
+    pub fn set_package(&mut self, pm: Package) {
         self.selected_package = Some(pm);
     }
 
     pub fn clear_selected(&mut self) {
         self.selected_package_manager = None;
         self.selected_package = None;
+        self.selected_category = None;
     }
 }

@@ -1,7 +1,7 @@
 use which::which;
 use crate::config::package_manager::*;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct PackageManagerResult {
     pub manager: &'static PackageManager,
     pub status: PackageManagerStatus,
@@ -45,8 +45,7 @@ pub fn daemon_check(pm: &'static PackageManager) -> PackageManagerResult {
         },
     }
 }
-#[derive(PartialEq)]
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum PackageManagerStatus {
     NotInstalled,
     Installed,

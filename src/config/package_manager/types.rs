@@ -29,7 +29,7 @@ pub enum PackageManagerCategory {
     Language,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct PackageManager {
     pub name: &'static str,
     pub cmd: &'static [&'static str],
@@ -38,7 +38,7 @@ pub struct PackageManager {
     pub detection_method: DetectionMethod,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct Command {
     pub capability: Capability,
     pub bin: &'static str,
@@ -46,7 +46,7 @@ pub struct Command {
     pub description: &'static str,
     pub requires_sudo: bool,
 }
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum Capability {
     Install,
     Update,
@@ -60,14 +60,14 @@ pub enum Capability {
     Alias(&'static str),
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub enum DetectionMethod {
     AbsolutePath,
     Version,
     Daemon,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum Args {
     Static(&'static str),
     PackageName,

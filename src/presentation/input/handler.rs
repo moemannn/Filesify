@@ -2,7 +2,9 @@ use crossterm::event::{read, Event, KeyCode};
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
 use std::process;
 use crate::app::AppState;
-use crate::config::package_manager::config::{APT, CARGO, SNAP};
+use crate::config::package_manager::config::{APT, CARGO, SNAP, *};
+use crate::config::package_manager::PackageManagerCategory;
+use crate::config::package_manager::PackageManagerCategory::{Distro, Language, User};
 
 pub fn key_loop(state: &mut AppState) -> std::io::Result<()> {
     enable_raw_mode()?;
@@ -10,22 +12,34 @@ pub fn key_loop(state: &mut AppState) -> std::io::Result<()> {
     loop {
         if let Event::Key(event) = read()? {
             match event.code {
-
-
-                KeyCode::F(1) => { state.select_package_manager(APT)}
-                KeyCode::F(2) => { state.select_package_manager(SNAP)}
-                KeyCode::F(3) => { state.select_package_manager(CARGO)}
-
-                // KeyCode::F(4) => { state.select_package_count(CARGO)}
-
-                KeyCode::Char('q') => {
-                    return Ok(());
+                KeyCode::F(1) => {
+                    change_category_manager(state, Distro)
                 }
 
-                other => {}
+                KeyCode::F(2) => {
+                    change_category_manager(state, User)
+                }
+
+                KeyCode::F(3) => {
+                    change_category_manager(state, Language)
+                }
+
+                KeyCode::Char('q') => {
+                    break;
+                }
+
+                _ => {}
             }
         }
     }
+
     disable_raw_mode()?;
     Ok(())
+}
+
+fn change_category_manager(
+    state: &mut AppState,
+    manager: PackageManagerCategory
+){
+    state.set_category(manager)
 }

@@ -79,14 +79,15 @@ pub fn render_list(
         .collect();
 
     let list = List::new(items);
-
-    dbg!(&list);
-
+    
     f.render_widget(list, inner);
 }
 
-fn select_item(state: &mut AppState, list_item: &PackageManager) -> ListItem<'static> {
-    let mut item = ListItem::new(list_item.name.clone());
+fn select_item(
+    state: &AppState,
+    list_item: &PackageManager
+) -> ListItem<'static> {
+    let mut item = ListItem::new(list_item.name);
 
     if state.selected_package_manager.unwrap().name == list_item.name {
         item = item.style(Style::new().fg(Color::Black).bg(Color::White));
